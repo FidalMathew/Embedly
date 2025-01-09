@@ -8,7 +8,10 @@ import { ChangeEvent, useContext, useEffect, useState } from "react";
 function DonationStarknetEdit() {
   // State variables for card customization
 
-  const { currentAccount } = useContext(EmbedlyContext);
+  const { currentAccount, embedlyContract } = useContext(EmbedlyContext) as {
+    currentAccount: string;
+    embedlyContract: { addTemplate: (cid: string) => Promise<any> } | null;
+  };
 
   const [bgColor, setBgColor] = useState("#ffffff"); // Default background color
   const [buttonColor, setButtonColor] = useState("#000000");
@@ -104,6 +107,12 @@ function DonationStarknetEdit() {
     // }
 
     // contract operations
+    if (embedlyContract) {
+      const tx = await embedlyContract?.addTemplate(cid);
+      console.log(tx, " tx");
+      await tx?.wait();
+      // activate modal
+    }
   };
 
   useEffect(() => {

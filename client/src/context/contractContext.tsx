@@ -1,5 +1,6 @@
 import { useEffect, useState, createContext, ReactNode } from "react";
 import { ethers } from "ethers";
+import abi from "@/lib/abi.json";
 
 // Extend the Window interface to include the ethereum property
 interface CustomWindow extends Window {
@@ -10,6 +11,7 @@ declare let window: CustomWindow;
 export const EmbedlyContext = createContext({
   chainId: "",
   currentAccount: "",
+  embedlyContract: null,
   switchNetwork: () => {},
   connectWallet: () => {},
 });
@@ -17,8 +19,29 @@ export const EmbedlyContext = createContext({
 export default function EmbedlyProvider({ children }: { children: ReactNode }) {
   const [chainId, setChainId] = useState<string>("");
   const [currentAccount, setCurrentAccount] = useState<string>("");
+  const [embedlyContract, setEmbedlyContract] = useState<any | null>(null);
+
+  const contractAddress = "0xad67ccfD4AeE1ED1bBB8C5Eb4d0Fc59b464B066d";
+  const contractABI = abi;
 
   const { ethereum } = window;
+
+  useEffect(() => {
+    const getContract = () => {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(
+        contractAddress,
+        contractABI,
+        signer
+      );
+
+      console.log("Contract:", contract);
+
+      setEmbedlyContract(contract);
+    };
+    if (ethereum && currentAccount) getContract();
+  }, [ethereum, contractABI, currentAccount]);
 
   useEffect(() => {
     if (!ethereum) {
@@ -32,6 +55,7 @@ export default function EmbedlyProvider({ children }: { children: ReactNode }) {
     };
 
     const handleChainChanged = (chainId: string) => {
+      console.log("Chain ID:", chainId);
       window.location.reload();
     };
 
@@ -121,6 +145,7 @@ export default function EmbedlyProvider({ children }: { children: ReactNode }) {
         currentAccount,
         switchNetwork,
         connectWallet,
+        embedlyContract,
       }}
     >
       {children}

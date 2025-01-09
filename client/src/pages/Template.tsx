@@ -1,3 +1,4 @@
+import DonationCitrea from "@/components/custom/DonationCitrea";
 import DonationStarknet from "@/components/custom/DonationStarknet";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -59,7 +60,7 @@ function Template() {
       {templateData?.chain && templateData?.chain === "Citrea" ? (
         <>
           {templateData?.templateType === "donation" && (
-            <DonationStarknet
+            <DonationCitrea
               bgColor={templateData.bgColor}
               btnText={templateData.btnText}
               buttonColor={templateData.buttonColor}
