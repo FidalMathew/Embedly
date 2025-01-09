@@ -29,8 +29,11 @@ function DonationStarknetEdit() {
 
   // New fields
   const [templateName, setTemplateName] = useState<string>("");
-  const [receiverAddress, setReceiverAddress] =
-    useState<string>(currentAccount);
+  const [receiverAddress, setReceiverAddress] = useState<string>("");
+
+  useEffect(() => {
+    setReceiverAddress(currentAccount);
+  }, [currentAccount]);
 
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; // Safely accessing the first file
@@ -68,9 +71,9 @@ function DonationStarknetEdit() {
     // chain
 
     const data = {
-      templateType: "donation",
+      templateId: currentAccount + "_" + templateName,
       chain,
-      templateName,
+      templateType: "donation",
       receiverAddress,
       imageUrl,
       bgColor,
@@ -93,6 +96,10 @@ function DonationStarknetEdit() {
 
     const cid = upload?.IpfsHash;
     console.log("IPFS json CID:", cid);
+    console.log(
+      "IPFS json URL:",
+      `https://coral-light-cicada-276.mypinata.cloud/ipfs/${cid}`
+    );
 
     // if (cid) {
     //   setImageUrl(
@@ -104,7 +111,7 @@ function DonationStarknetEdit() {
   };
 
   useEffect(() => {
-    publishTemplate();
+    if (imageFile) publishTemplate();
   }, [imageUrl]);
 
   return (
