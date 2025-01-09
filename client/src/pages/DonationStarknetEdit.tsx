@@ -1,11 +1,15 @@
 import { Navbar } from "@/components/custom/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { EmbedlyContext } from "@/context/contractContext";
 import { PinataSDK } from "pinata-web3";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
 
 function DonationStarknetEdit() {
   // State variables for card customization
+
+  const { currentAccount } = useContext(EmbedlyContext);
+
   const [bgColor, setBgColor] = useState("#ffffff"); // Default background color
   const [buttonColor, setButtonColor] = useState("#000000");
   const [heading, setHeading] = useState("Support Education");
@@ -22,6 +26,11 @@ function DonationStarknetEdit() {
   );
 
   const [chain, setChain] = useState("Citrea"); // Default chain
+
+  // New fields
+  const [templateName, setTemplateName] = useState<string>("");
+  const [receiverAddress, setReceiverAddress] =
+    useState<string>(currentAccount);
 
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; // Safely accessing the first file
@@ -58,18 +67,20 @@ function DonationStarknetEdit() {
     // templateType = donation
     // chain
 
-    await uploadToIPFS();
-
     const data = {
-      userAddress: "0x1234567890",
+      templateType: "donation",
+      chain,
+      templateName,
+      receiverAddress,
       imageUrl,
       bgColor,
       buttonColor,
       heading,
       text,
-      templateType: "donation",
-      chain: "starknet",
+      btnText,
     };
+
+    console.log(data, " data");
 
     const pinata = new PinataSDK({
       pinataJwt: import.meta.env.VITE_PINATA_JWT, // Access the variable using import.meta.env
@@ -79,7 +90,22 @@ function DonationStarknetEdit() {
     const upload = await pinata.upload.json(data);
 
     console.log(upload, " upload");
+
+    const cid = upload?.IpfsHash;
+    console.log("IPFS json CID:", cid);
+
+    // if (cid) {
+    //   setImageUrl(
+    //     `https://coral-light-cicada-276.mypinata.cloud/ipfs/${cid}`
+    //   );
+    // }
+
+    // contract operations
   };
+
+  useEffect(() => {
+    publishTemplate();
+  }, [imageUrl]);
 
   return (
     <>
@@ -139,6 +165,36 @@ function DonationStarknetEdit() {
           style={{ backgroundColor: "#f9f9f9" }}
         >
           <h3 className="text-lg font-semibold mb-4">Customize Card</h3>
+
+          {/* Template Name */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Template Name <span className="text-red-500">*</span>
+            </label>
+            <Input
+              type="text"
+              value={templateName}
+              onChange={(e) => setTemplateName(e.target.value)}
+              className="mt-2"
+              placeholder="Enter template name"
+              required
+            />
+          </div>
+
+          {/* Receiver Address */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Receiver Address <span className="text-red-500">*</span>
+            </label>
+            <Input
+              type="text"
+              value={receiverAddress}
+              onChange={(e) => setReceiverAddress(e.target.value)}
+              className="mt-2"
+              placeholder="Enter receiver address"
+              required
+            />
+          </div>
 
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
@@ -221,7 +277,7 @@ function DonationStarknetEdit() {
 
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
-              Button Text
+              Button Text <span className="text-red-500">*</span>
             </label>
             <Input
               type="text"
@@ -233,7 +289,10 @@ function DonationStarknetEdit() {
           </div>
 
           <div className="mt-4">
-            <Button onClick={publishTemplate} className="w-full">
+            <Button
+              onClick={imageFile ? uploadToIPFS : publishTemplate}
+              className="w-full"
+            >
               Publish Template
             </Button>
           </div>
