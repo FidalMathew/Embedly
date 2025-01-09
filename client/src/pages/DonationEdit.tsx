@@ -123,7 +123,7 @@ function DonationStarknetEdit() {
         {/* Donation Card */}
         <div
           className="border rounded-lg shadow-md p-6 max-w-sm mt-28 "
-          style={{ backgroundColor: bgColor, height: "fit-content" }}
+          style={{ backgroundColor: bgColor, height: "500px", width: "400px" }}
         >
           {/* Image Section */}
           <div className="w-full h-48 bg-gray-200 rounded-md overflow-hidden">

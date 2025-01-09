@@ -1,5 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  useAccount,
+  useConnect,
+  useContract,
+  useDisconnect,
+  useSendTransaction,
+} from "@starknet-react/core";
+import { useMemo, useState } from "react";
+import { starknetCounterAbi } from "@/lib/starknetAbi";
 
 interface DonationStarknetProps {
   bgColor: string;
@@ -8,6 +17,7 @@ interface DonationStarknetProps {
   text: string;
   buttonColor: string;
   btnText: string;
+  reciverAddress: string;
 }
 
 function DonationStarknet({
@@ -17,12 +27,52 @@ function DonationStarknet({
   text,
   buttonColor,
   btnText,
+  reciverAddress,
 }: DonationStarknetProps) {
+  const { connect, connectors } = useConnect();
+  const { address } = useAccount();
+  const { disconnect } = useDisconnect({});
+
+  const testAddress =
+    "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7";
+
+  const [ethAmount, setEthAmount] = useState<string>("0");
+
+  const { contract } = useContract({
+    abi: starknetCounterAbi as any,
+    address: testAddress,
+  });
+
+  const calls = useMemo(() => {
+    if (!address || !contract) return [];
+    try {
+      // return [contract.populate("set_count", [BigInt(679)])];
+
+      // convert eth to wei
+
+      const val = parseFloat(ethAmount);
+
+      return [
+        contract.populate("transfer", [
+          reciverAddress,
+          BigInt(val * 10 ** 18), // this requires number input in wei
+        ]),
+      ];
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }, [contract, address]);
+
+  const { send: writeAsync } = useSendTransaction({
+    calls: calls,
+  });
+
   return (
     <div className="flex justify-center">
       <div
-        className="border rounded-lg shadow-md p-6 max-w-sm mt-28"
-        style={{ backgroundColor: bgColor, height: "fit-content" }}
+        className=" p-6 "
+        style={{ backgroundColor: bgColor, height: "500px", width: "400px" }}
       >
         {/* Image Section */}
         <div className="w-full h-48 bg-gray-200 rounded-md overflow-hidden">
@@ -48,10 +98,12 @@ function DonationStarknet({
             Amount
           </label>
           <Input
-            type="number"
+            type="text"
             id="donation-amount"
             placeholder="Enter amount in ETH"
             className="mt-2 w-full"
+            value={ethAmount}
+            onChange={(e) => setEthAmount(e.target.value)}
           />
         </div>
 
@@ -60,8 +112,25 @@ function DonationStarknet({
           <Button
             className="w-full"
             style={{ backgroundColor: buttonColor, color: "#fff" }}
+            onClick={() => {
+              if (address) {
+                writeAsync();
+              } else {
+                connectors.length > 0 ? (
+                  connectors.map((connector, index) =>
+                    connectors[index].id == "argentX" ? (
+                      connect({ connector })
+                    ) : (
+                      <></>
+                    )
+                  )
+                ) : (
+                  <></>
+                );
+              }
+            }}
           >
-            {btnText}
+            {address ? btnText : "Connect with ArgentX "}
           </Button>
         </div>
       </div>

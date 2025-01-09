@@ -66,6 +66,7 @@ function Template() {
               heading={templateData.heading}
               text={templateData.text}
               imageUrl={templateData.imageUrl}
+              reciverAddress={templateData.receiverAddress}
             />
           )}
         </>
@@ -79,6 +80,7 @@ function Template() {
               heading={templateData.heading}
               text={templateData.text}
               imageUrl={templateData.imageUrl}
+              reciverAddress={templateData.receiverAddress}
             />
           )}
         </>

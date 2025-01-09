@@ -5,7 +5,7 @@ import {
   useDisconnect,
   useSendTransaction,
 } from "@starknet-react/core";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { starknetCounterAbi } from "../lib/starknetAbi";
 import { Button } from "../components/ui/button";
 
