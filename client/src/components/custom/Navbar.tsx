@@ -1,13 +1,17 @@
 // components/Navbar.tsx
 import { cn } from "@/lib/utils"; // Utility function for conditional classNames
 import { Button } from "@/components/ui/button";
+import { useContext } from "react";
+import { EmbedlyContext } from "@/context/contractContext";
 
 export const Navbar = () => {
+  const { currentAccount, connectWallet } = useContext(EmbedlyContext);
+
   return (
-    <nav className="bg-white border-b shadow-sm fixed w-full h-16">
+    <nav className="bg-white border-b shadow-sm fixed w-full h-16 pt-2">
       <div className="container mx-auto flex justify-between items-center px-4 py-2">
         {/* Logo or Branding */}
-        <div className="text-xl font-bold text-gray-800">My App</div>
+        <div className="text-xl font-bold text-gray-800">Embedly</div>
 
         {/* Navigation Links */}
         <div className="flex space-x-6">
@@ -17,7 +21,19 @@ export const Navbar = () => {
         </div>
 
         {/* Additional Actions (Optional) */}
-        <Button variant="default">Connect Wallet</Button>
+        {currentAccount ? (
+          currentAccount.slice(0, 6) + "..." + currentAccount.slice(-4)
+        ) : (
+          <Button
+            variant="default"
+            onClick={() => {
+              console.log("Connect Wallet", connectWallet);
+              connectWallet();
+            }}
+          >
+            Connect Wallet
+          </Button>
+        )}
       </div>
     </nav>
   );

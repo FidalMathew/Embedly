@@ -21,6 +21,8 @@ function DonationStarknetEdit() {
     "https://coral-light-cicada-276.mypinata.cloud/ipfs/bafkreieti3xvkumm7wi5cygkhqhexk77swa4mzsloa6t2le3rvwtkxypiy"
   );
 
+  const [chain, setChain] = useState("Citrea"); // Default chain
+
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; // Safely accessing the first file
     if (file) {
@@ -111,7 +113,7 @@ function DonationStarknetEdit() {
               htmlFor="donation-amount"
               className="block text-sm font-medium text-gray-700"
             >
-              Donation Amount
+              Amount
             </label>
             <Input
               type="number"
@@ -137,6 +139,20 @@ function DonationStarknetEdit() {
           style={{ backgroundColor: "#f9f9f9" }}
         >
           <h3 className="text-lg font-semibold mb-4">Customize Card</h3>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Select Chain
+            </label>
+            <select
+              value={chain}
+              onChange={(e) => setChain(e.target.value)}
+              className="mt-2 w-full border rounded-md px-2 py-1"
+            >
+              <option value="Citrea">Citrea (supported by MetaMask)</option>
+              <option value="Starknet">Starknet (supported by Argent)</option>
+            </select>
+          </div>
 
           {/* Image URL */}
           <div className="mb-4">
