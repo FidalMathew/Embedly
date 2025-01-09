@@ -31,10 +31,6 @@ function DonationStarknetEdit() {
   const [templateName, setTemplateName] = useState<string>("");
   const [receiverAddress, setReceiverAddress] = useState<string>("");
 
-  useEffect(() => {
-    setReceiverAddress(currentAccount);
-  }, [currentAccount]);
-
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; // Safely accessing the first file
     if (file) {
@@ -149,7 +145,7 @@ function DonationStarknetEdit() {
               Amount
             </label>
             <Input
-              type="number"
+              type="text"
               id="donation-amount"
               placeholder="Enter amount in ETH"
               className="mt-2 w-full"
@@ -198,7 +194,7 @@ function DonationStarknetEdit() {
               value={receiverAddress}
               onChange={(e) => setReceiverAddress(e.target.value)}
               className="mt-2"
-              placeholder="Enter receiver address"
+              placeholder="Enter receiver address (chain specific)"
               required
             />
           </div>

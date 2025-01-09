@@ -4,7 +4,7 @@ import {
   useAccount,
   useConnect,
   useContract,
-  useDisconnect,
+  // useDisconnect,
   useSendTransaction,
 } from "@starknet-react/core";
 import { useMemo, useState } from "react";
@@ -31,7 +31,7 @@ function DonationStarknet({
 }: DonationStarknetProps) {
   const { connect, connectors } = useConnect();
   const { address } = useAccount();
-  const { disconnect } = useDisconnect({});
+  // const { disconnect } = useDisconnect({});
 
   const testAddress =
     "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7";
@@ -50,6 +50,10 @@ function DonationStarknet({
 
       // convert eth to wei
 
+      console.log("reciverAddress", reciverAddress);
+
+      console.log("ethAmount", ethAmount);
+
       const val = parseFloat(ethAmount);
 
       return [
@@ -62,7 +66,7 @@ function DonationStarknet({
       console.error(error);
       return [];
     }
-  }, [contract, address]);
+  }, [contract, ethAmount, address, reciverAddress]);
 
   const { send: writeAsync } = useSendTransaction({
     calls: calls,
@@ -103,7 +107,10 @@ function DonationStarknet({
             placeholder="Enter amount in ETH"
             className="mt-2 w-full"
             value={ethAmount}
-            onChange={(e) => setEthAmount(e.target.value)}
+            onChange={(e) => {
+              console.log("ethAmount", e.target.value);
+              setEthAmount(e.target.value);
+            }}
           />
         </div>
 
