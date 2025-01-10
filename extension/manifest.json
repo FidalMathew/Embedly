@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "Embedly: Bring web3 to web2",
+  "version": "1.0",
+  "description": "Fetches HTML content from URLs within custom emb tags and replaces the tags with iframe",
+  "permissions": ["activeTab", "http://*/*", "https://*/*"],
+  "content_scripts": [
+    {
+      "matches": ["*://*.x.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "icons": {
+    "16": "images/icon16.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  }
+}

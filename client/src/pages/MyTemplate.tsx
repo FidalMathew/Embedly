@@ -1,13 +1,12 @@
 import {
   Card,
-  CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useContext, useEffect, useState } from "react";
-import EmbedlyProvider, { EmbedlyContext } from "@/context/contractContext";
+import { EmbedlyContext } from "@/context/contractContext";
 import { Navbar } from "@/components/custom/Navbar";
 
 interface Template {
@@ -18,7 +17,7 @@ interface Template {
 }
 
 function MyTemplate() {
-  const { currentAccount, embedlyContract } = useContext(EmbedlyContext) as {
+  const { embedlyContract } = useContext(EmbedlyContext) as {
     currentAccount: string;
     embedlyContract: { getTemplates: () => Promise<any> } | null;
   };
