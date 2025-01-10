@@ -16,7 +16,7 @@ export const Navbar = () => {
         {/* Navigation Links */}
         <div className="flex space-x-6">
           <NavItem href="/" text="Home" />
-          <NavItem href="/templates" text="My Templates" />
+          <NavItem href="/mytemplates" text="My Templates" />
           <NavItem href="/create" text="Create" />
         </div>
 

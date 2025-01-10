@@ -21,7 +21,7 @@ export default function EmbedlyProvider({ children }: { children: ReactNode }) {
   const [currentAccount, setCurrentAccount] = useState<string>("");
   const [embedlyContract, setEmbedlyContract] = useState<any | null>(null);
 
-  const contractAddress = "0x6FD9623a33Ab8309A002b47d373681DF32d2f867";
+  const contractAddress = "0x684538003f7581ff90Ab914eFAEf800009351e7d";
   const contractABI = abi;
 
   const { ethereum } = window;
