@@ -8,7 +8,7 @@ export const Navbar = () => {
   const { currentAccount, connectWallet } = useContext(EmbedlyContext);
 
   return (
-    <nav className="bg-white border-b shadow-sm fixed w-full h-16 pt-2">
+    <nav className="bg-white border-b shadow-sm fixed w-full h-16 pt-2 z-10">
       <div className="container mx-auto flex justify-between items-center px-4 py-2">
         {/* Logo or Branding */}
         <div className="text-xl font-bold text-gray-800">Embedly</div>
