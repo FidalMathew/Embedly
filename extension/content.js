@@ -1,5 +1,3 @@
-// Function to inject a script into the page context
-
 async function replaceEmbTags() {
   // Find all span elements containing <emb ... emb> or &lt;emb ... emb&gt;
 
@@ -24,8 +22,6 @@ async function replaceEmbTags() {
       const defaultResponse = {
         span: "defaultSpan",
         match: "defaultMatch",
-        // htmlText:
-        //   '<html><p>Default HTML content</p><button class="fid-button">Switch Chain</button></html>',
 
         htmlText: `<html>
 
@@ -62,8 +58,6 @@ async function replaceEmbTags() {
 `,
         jsCode: ``,
       };
-
-      // https://echo-verse-vert.vercel.app/
 
       // add html content
       span.innerHTML = defaultResponse.htmlText;
