@@ -15,7 +15,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-function DonationStarknetEdit() {
+function NFTEdit() {
   // State variables for card customization
 
   const { toast } = useToast();
@@ -25,26 +25,30 @@ function DonationStarknetEdit() {
     embedlyContract: { addTemplate: (cid: string) => Promise<any> } | null;
   };
 
-  const [bgColor, setBgColor] = useState("#ffffff"); // Default background color
-  const [buttonColor, setButtonColor] = useState("#000000");
-  const [heading, setHeading] = useState("Support Education");
+  const [bgColor, setBgColor] = useState("#f3ff94"); // Default background color
+  const [buttonColor, setButtonColor] = useState("#5600f5");
+  const [heading, setHeading] = useState("Bored APE NFT");
   const [text, setText] = useState(
-    "Help provide books and resources to underprivileged children."
+    "Limited Editon NFT collection. Mint your Bored APE NFT now!"
   );
 
-  const [btnText, setBtnText] = useState("Donate");
+  const [btnText, setBtnText] = useState("Mint");
 
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [imageUrl, setImageUrl] = useState<string>(
-    "https://coral-light-cicada-276.mypinata.cloud/ipfs/bafkreieti3xvkumm7wi5cygkhqhexk77swa4mzsloa6t2le3rvwtkxypiy"
+    "https://coral-light-cicada-276.mypinata.cloud/ipfs/bafkreiaonna64qwrpt6jimfxen7ox4syhhgxbiev6mon2qrcsepq7wqt3m"
   );
+
+  const [abiFile, setAbiFile] = useState<File | null>(null);
+  const [abiUrl, setAbiUrl] = useState<string>("");
+  const [functionToInvoke, setFunctionToInvoke] = useState("");
 
   const [chain, setChain] = useState("Citrea"); // Default chain
 
   // New fields
   const [templateName, setTemplateName] = useState<string>("");
-  const [receiverAddress, setReceiverAddress] = useState<string>("");
+  const [contractAddress, setContractAddress] = useState<string>("");
 
   // const templateSnippet = "<emb ipfs:// emb>";
   const [templateSnippet, setTemplateSnippet] = useState<string>("");
@@ -79,6 +83,24 @@ function DonationStarknetEdit() {
     }
   };
 
+  const uploadABI = async () => {
+    const pinata = new PinataSDK({
+      pinataJwt: import.meta.env.VITE_PINATA_JWT, // Access the variable using import.meta.env
+      pinataGateway: "coral-light-cicada-276.mypinata.cloud",
+    });
+
+    if (abiFile) {
+      const upload = await pinata.upload.file(abiFile);
+      console.log(upload, " upload");
+      const cid = upload?.IpfsHash;
+      console.log("IPFS CID:", cid);
+
+      if (cid) {
+        setAbiUrl(`https://coral-light-cicada-276.mypinata.cloud/ipfs/${cid}`);
+      }
+    }
+  };
+
   const publishTemplate = async () => {
     // things needed
     // userAddress, imageUrl, bgColor, buttonColor, heading, text
@@ -88,9 +110,11 @@ function DonationStarknetEdit() {
     const data = {
       templateId: currentAccount + "_" + templateName,
       chain,
-      templateType: "donation",
-      receiverAddress,
+      templateType: "nft",
+      contractAddress,
       imageUrl,
+      abiUrl,
+      functionToInvoke,
       bgColor,
       buttonColor,
       heading,
@@ -139,6 +163,10 @@ function DonationStarknetEdit() {
     if (imageFile) publishTemplate();
   }, [imageUrl]);
 
+  useEffect(() => {
+    if (abiFile) uploadABI();
+  }, [abiFile]);
+
   const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(templateSnippet);
     console.log("Copied to clipboard!");
@@ -185,7 +213,7 @@ function DonationStarknetEdit() {
         </DialogContent>
 
         {/* Main Content  */}
-        <div className="flex gap-20 justify-between ">
+        <div className="flex gap-20 justify-between">
           <div></div>
           <div></div>
           {/* Donation Card */}
@@ -198,10 +226,10 @@ function DonationStarknetEdit() {
             }}
           >
             {/* Image Section */}
-            <div className="w-full h-48 bg-gray-200 rounded-md overflow-hidden">
+            <div className="w-full h-72 bg-gray-200 rounded-md overflow-hidden">
               <img
                 src={
-                  imageFile ? URL.createObjectURL(imageFile) : "/donation.png"
+                  imageFile ? URL.createObjectURL(imageFile) : "/bored-ape.png"
                 }
                 alt="user"
                 className="-z-50 overflow-hidden"
@@ -212,23 +240,6 @@ function DonationStarknetEdit() {
             <div className="mt-4">
               <h2 className="text-lg font-semibold">{heading}</h2>
               <p className="text-sm text-gray-600 mt-2">{text}</p>
-            </div>
-
-            {/* Input Section */}
-            <div className="mt-4">
-              <label
-                text-pink-700
-                htmlFor="donation-amount"
-                className="block text-sm font-medium "
-              >
-                Amount
-              </label>
-              <Input
-                type="text"
-                id="donation-amount"
-                placeholder="Enter amount in ETH"
-                className="mt-2 w-full"
-              />
             </div>
 
             {/* Button Section */}
@@ -243,13 +254,13 @@ function DonationStarknetEdit() {
           </div>
           {/* Editor Section */}
           <div className="border h-screen  shadow-md p-4 max-w-sm pt-20 overflow-y-auto bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100">
-            <h3 className="text-lg font-semibold mb-4 text-purple-800">
+            <h3 className="text-lg font-semibold mb-4  text-purple-800">
               Customize Card
             </h3>
 
             {/* Template Name */}
             <div className="mb-4">
-              <label className=" block text-sm font-medium  text-pink-700">
+              <label className="block text-sm font-medium text-pink-700">
                 Template Name <span className="text-red-500">*</span>
               </label>
               <Input
@@ -262,23 +273,51 @@ function DonationStarknetEdit() {
               />
             </div>
 
-            {/* Receiver Address */}
+            {/* Contract Address */}
             <div className="mb-4">
-              <label className="text-pink-700 block text-sm font-medium ">
-                Receiver Address <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-pink-700">
+                Contract Address <span className="text-red-500">*</span>
               </label>
               <Input
                 type="text"
-                value={receiverAddress}
-                onChange={(e) => setReceiverAddress(e.target.value)}
+                value={contractAddress}
+                onChange={(e) => setContractAddress(e.target.value)}
                 className="mt-2"
-                placeholder="Enter receiver address (chain specific)"
+                placeholder="Enter contract address (chain specific)"
                 required
               />
             </div>
 
+            {/* ABI */}
             <div className="mb-4">
-              <label className="text-pink-700 block text-sm font-medium ">
+              <label className="block text-sm font-medium text-pink-700">
+                ABI
+              </label>
+              <Input
+                type="file"
+                onChange={(e) => setAbiFile(e.target.files?.[0] || null)}
+                className="mt-2"
+                accept=".json"
+                required
+              />
+            </div>
+
+            {/* Function to Invoke  */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-pink-700">
+                Function to Invoke
+              </label>
+              <Input
+                type="text"
+                value={functionToInvoke}
+                onChange={(e) => setFunctionToInvoke(e.target.value)}
+                className="mt-2"
+                placeholder="Enter function to invoke"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-pink-700">
                 Select Chain
               </label>
               <select
@@ -293,7 +332,7 @@ function DonationStarknetEdit() {
 
             {/* Image URL */}
             <div className="mb-4">
-              <label className="text-pink-700 block text-sm font-medium ">
+              <label className="block text-sm font-medium text-pink-700">
                 Image
               </label>
               <Input
@@ -305,7 +344,7 @@ function DonationStarknetEdit() {
             </div>
             {/* Background Color */}
             <div className="mb-4">
-              <label className="text-pink-700 block text-sm font-medium ">
+              <label className="block text-sm font-medium text-pink-700">
                 Background Color
               </label>
               <Input
@@ -318,7 +357,7 @@ function DonationStarknetEdit() {
 
             {/* Button Color */}
             <div className="mb-4">
-              <label className="text-pink-700 block text-sm font-medium ">
+              <label className="block text-sm font-medium text-pink-700">
                 Button Color
               </label>
               <Input
@@ -331,7 +370,7 @@ function DonationStarknetEdit() {
 
             {/* Heading Text */}
             <div className="mb-4">
-              <label className="text-pink-700 block text-sm font-medium ">
+              <label className="block text-sm font-medium text-pink-700">
                 Heading Text
               </label>
               <Input
@@ -345,7 +384,7 @@ function DonationStarknetEdit() {
 
             {/* Body Text */}
             <div className="mb-4">
-              <label className="text-pink-700 block text-sm font-medium ">
+              <label className="block text-sm font-medium text-pink-700">
                 Body Text
               </label>
               <textarea
@@ -357,7 +396,7 @@ function DonationStarknetEdit() {
             </div>
 
             <div className="mb-4">
-              <label className="text-pink-700 block text-sm font-medium ">
+              <label className="block text-sm font-medium text-pink-700">
                 Button Text <span className="text-red-500">*</span>
               </label>
               <Input
@@ -372,7 +411,6 @@ function DonationStarknetEdit() {
             <div className="mt-4">
               <Button
                 onClick={imageFile ? uploadToIPFS : publishTemplate}
-                // className="w-full"
                 className="bg-purple-500 hover:bg-purple-600 text-white w-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 Publish Template
@@ -385,4 +423,4 @@ function DonationStarknetEdit() {
   );
 }
 
-export default DonationStarknetEdit;
+export default NFTEdit;
