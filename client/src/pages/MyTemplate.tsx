@@ -8,23 +8,35 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { EmbedlyContext } from "@/context/contractContext";
 import Navbar from "@/components/custom/Navbar";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Trash, ClipboardCopy, Link } from "lucide-react";
+import { al } from "node_modules/@starknet-react/core/dist/index-BztLWTpJ";
 
 interface Template {
   id: string;
   templateId: string;
   templateType: string;
   chain: string;
+  reciverAddress: string;
+  contractAddress: string;
 }
 
 export default function MyTemplates() {
   const { embedlyContract } = useContext(EmbedlyContext) as {
     currentAccount: string;
-    embedlyContract: { getTemplates: () => Promise<any> } | null;
+    embedlyContract: {
+      getTemplates: () => Promise<any>;
+      deleteTemplate: (id: string) => Promise<any>;
+    } | null;
   };
 
   const [templates, setTemplates] = useState<Template[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+
+  const handleCopyToClipboard = (id: string) => {
+    navigator.clipboard.writeText(`<emb ${id} emb/>`);
+    console.log("Copied to clipboard!");
+    alert("Copied to clipboard!");
+  };
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -60,6 +72,18 @@ export default function MyTemplates() {
     fetchTemplates();
   }, [embedlyContract]);
 
+  const handleDelete = async (id: string) => {
+    try {
+      await embedlyContract?.deleteTemplate(id);
+
+      setTemplates((prevTemplates) =>
+        prevTemplates.filter((template) => template.id !== id)
+      );
+    } catch (error) {
+      console.error("Error deleting template:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100">
       <Navbar />
@@ -82,12 +106,44 @@ export default function MyTemplates() {
                       {template.templateId.slice(43)}
                     </CardTitle>
                     <CardDescription>
-                      <p className="text-purple-700">
-                        <strong>Type:</strong> {template.templateType}
-                      </p>
-                      <p className="text-purple-700">
-                        <strong>Chain:</strong> {template.chain}
-                      </p>
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="text-purple-700">
+                            <strong>Type:</strong> {template.templateType}
+                          </p>
+                          <p className="text-purple-700">
+                            <strong>Chain:</strong> {template.chain}
+                          </p>
+                          {template.reciverAddress && (
+                            <p className="text-purple-700">
+                              <strong>Receiver:</strong>{" "}
+                              {template.reciverAddress}
+                            </p>
+                          )}
+                          {template.contractAddress && (
+                            <p className="text-purple-700">
+                              <strong>Contract:</strong>{" "}
+                              {template.contractAddress}
+                            </p>
+                          )}
+                        </div>
+                        <div>
+                          <span className="flex space-x-2">
+                            {" "}
+                            <Trash
+                              className="w-6 h-6 text-red-500"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(template.id);
+                              }}
+                            />{" "}
+                            <ClipboardCopy
+                              className="w-6 h-6 text-blue-500"
+                              onClick={() => handleCopyToClipboard(template.id)}
+                            />{" "}
+                          </span>
+                        </div>
+                      </div>
                     </CardDescription>
                   </CardHeader>
                 </Card>

@@ -1,0 +1,10 @@
+{
+  "name": "Fidal #1",
+  "description": "This is the first NFT in the MyToken collection. -Fidal",
+  "image": "https://coral-light-cicada-276.mypinata.cloud/ipfs/bafkreidm65lbuwx6tttqc5blpcvobiovxnzme6htm563nggv4llpdye2a4",
+  "attributes": [
+    { "trait_type": "Background", "value": "Blue" },
+    { "trait_type": "Eyes", "value": "Glowing" },
+    { "trait_type": "Mouth", "value": "Smile" }
+  ]
+}

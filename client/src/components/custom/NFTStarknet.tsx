@@ -3,10 +3,9 @@ import {
   useAccount,
   useConnect,
   useContract,
-  // useDisconnect,
   useSendTransaction,
 } from "@starknet-react/core";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface NFTStarknetProps {
   bgColor: string;
@@ -22,7 +21,7 @@ interface NFTStarknetProps {
 
 function NFTStarknet({
   bgColor,
-  imageUrl, // Default image if no URL is provided
+  imageUrl,
   heading,
   text,
   buttonColor,
@@ -33,81 +32,100 @@ function NFTStarknet({
 }: NFTStarknetProps) {
   const { connect, connectors } = useConnect();
   const { address } = useAccount();
-  // const { disconnect } = useDisconnect({});
 
-  // const testAddress =
-  //   "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7";
+  // State for storing the fetched ABI
+  const [starknetContractAbi, setStarknetContractAbi] = useState<any | null>(
+    null
+  );
 
-  // get abi from url
+  // Fetch ABI from the provided URL
+  useEffect(() => {
+    const fetchAbi = async () => {
+      try {
+        const response = await fetch(abiUrl);
+        const abi = await response.json();
+        setStarknetContractAbi(abi);
+      } catch (error) {
+        console.error("Error fetching ABI:", error);
+      }
+    };
+    fetchAbi();
+  }, [abiUrl]);
 
-  const starknetContractAbi = fetch(abiUrl).then((res) => res.json());
-
+  // Initialize the contract with the ABI
   const { contract } = useContract({
-    abi: starknetContractAbi as any,
+    abi: starknetContractAbi,
     address: contractAddress,
   });
 
+  // Create transaction calls
   const calls = useMemo(() => {
     if (!address || !contract) return [];
-    try {
-      // return [contract.populate("set_count", [BigInt(679)])];
 
-      return [contract.populate(functionToInvoke)];
+    console.log("address", address);
+    console.log("contract", contract);
+    console.log("functionToInvoke", functionToInvoke);
+
+    try {
+      return [
+        contract.populate(functionToInvoke, [address, BigInt(2), [BigInt(1)]]),
+      ];
     } catch (error) {
-      console.error(error);
+      console.error("Error populating function call:", error);
       return [];
     }
-  }, [contract, address, contractAddress]);
+  }, [contract, address, starknetContractAbi]);
 
   const { send: writeAsync } = useSendTransaction({
-    calls: calls,
+    calls,
   });
 
   return (
-    <div
-      className="border rounded-lg shadow-md p-6 max-w-sm mt-28 "
-      style={{
-        backgroundColor: bgColor,
-        height: "500px",
-        width: "400px",
-      }}
-    >
-      {/* Image Section */}
-      <div className="w-full h-72 bg-gray-200 rounded-md overflow-hidden">
-        <img src={imageUrl} alt="user" className="-z-50 overflow-hidden" />
-      </div>
+    <div className="flex justify-center">
+      <div
+        className=" p-6 "
+        style={{ backgroundColor: bgColor, height: "500px", width: "400px" }}
+      >
+        {/* Image Section */}
+        <div className="w-full h-72 bg-gray-200 rounded-md overflow-hidden">
+          <img
+            src={imageUrl || "https://via.placeholder.com/400"}
+            alt={imageUrl ? "NFT Image" : "Default Placeholder"}
+            className="w-full h-full object-cover"
+          />
+        </div>
 
-      {/* Text Section */}
-      <div className="mt-4">
-        <h2 className="text-lg font-semibold">{heading}</h2>
-        <p className="text-sm text-gray-600 mt-2">{text}</p>
-      </div>
+        {/* Text Section */}
+        <div className="mt-4">
+          <h2 className="text-lg font-semibold">{heading}</h2>
+          <p className="text-sm text-gray-600 mt-2">{text}</p>
+        </div>
 
-      {/* Button Section */}
-      <div className="mt-4">
-        <Button
-          className="w-full"
-          style={{ backgroundColor: buttonColor, color: "#fff" }}
-          onClick={() => {
-            if (address) {
-              writeAsync();
-            } else {
-              connectors.length > 0 ? (
-                connectors.map((connector, index) =>
-                  connectors[index].id == "argentX" ? (
-                    connect({ connector })
-                  ) : (
-                    <></>
-                  )
-                )
-              ) : (
-                <></>
-              );
-            }
-          }}
-        >
-          {btnText}
-        </Button>
+        {/* Button Section */}
+        <div className="mt-4">
+          <Button
+            className="w-full"
+            style={{ backgroundColor: buttonColor, color: "#fff" }}
+            onClick={() => {
+              console.log("address", address);
+
+              if (address) {
+                writeAsync();
+              } else {
+                const argentXConnector = connectors.find(
+                  (connector) => connector.id === "argentX"
+                );
+                if (argentXConnector) {
+                  connect({ connector: argentXConnector });
+                } else {
+                  console.error("ArgentX connector not found.");
+                }
+              }
+            }}
+          >
+            {address ? btnText : "Connect with ArgentX "}
+          </Button>
+        </div>
       </div>
     </div>
   );

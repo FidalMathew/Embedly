@@ -53,6 +53,8 @@ function NFTCitrea({
         signer
       );
 
+      console.log("contract", contract);
+
       const tx = await contract[functionToInvoke]();
       console.log("Transaction:", tx);
       alert("Transaction sent!");
@@ -65,40 +67,38 @@ function NFTCitrea({
   };
 
   return (
-    <div
-      className="border rounded-lg shadow-md p-6 max-w-sm mt-28 "
-      style={{
-        backgroundColor: bgColor,
-        height: "500px",
-        width: "400px",
-      }}
-    >
-      {/* Image Section */}
-      <div className="w-full h-72 bg-gray-200 rounded-md overflow-hidden">
-        <img src={imageUrl} alt="user" className="-z-50 overflow-hidden" />
-      </div>
+    <div className="flex justify-center">
+      <div
+        className=" p-6 "
+        style={{ backgroundColor: bgColor, height: "500px", width: "400px" }}
+      >
+        {/* Image Section */}
+        <div className="w-full h-72 bg-gray-200 rounded-md overflow-hidden">
+          <img src={imageUrl} alt="user" className="-z-50 overflow-hidden" />
+        </div>
 
-      {/* Text Section */}
-      <div className="mt-4">
-        <h2 className="text-lg font-semibold">{heading}</h2>
-        <p className="text-sm text-gray-600 mt-2">{text}</p>
-      </div>
+        {/* Text Section */}
+        <div className="mt-4">
+          <h2 className="text-lg font-semibold">{heading}</h2>
+          <p className="text-sm text-gray-600 mt-2">{text}</p>
+        </div>
 
-      {/* Button Section */}
-      <div className="mt-4">
-        <Button
-          className="w-full"
-          style={{ backgroundColor: buttonColor, color: "#fff" }}
-          onClick={() => {
-            if (currentAccount) {
-              callContract();
-            } else {
-              connectWallet();
-            }
-          }}
-        >
-          {btnText}
-        </Button>
+        {/* Button Section */}
+        <div className="mt-4">
+          <Button
+            className="w-full"
+            style={{ backgroundColor: buttonColor, color: "#fff" }}
+            onClick={() => {
+              if (currentAccount) {
+                callContract();
+              } else {
+                connectWallet();
+              }
+            }}
+          >
+            {btnText}
+          </Button>
+        </div>
       </div>
     </div>
   );

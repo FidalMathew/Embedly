@@ -1,5 +1,7 @@
 import DonationCitrea from "@/components/custom/DonationCitrea";
 import DonationStarknet from "@/components/custom/DonationStarknet";
+import NFTCitrea from "@/components/custom/NFTCitrea";
+import NFTStarknet from "@/components/custom/NFTStarknet";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -14,6 +16,9 @@ interface TemplateData {
   heading: string;
   text: string;
   btnText: string;
+  contractAddress: `0x${string}`;
+  functionToInvoke: string;
+  abiUrl: string;
 }
 
 function Template() {
@@ -67,7 +72,20 @@ function Template() {
               heading={templateData.heading}
               text={templateData.text}
               imageUrl={templateData.imageUrl}
-              reciverAddress={templateData.receiverAddress}
+              reciverAddress={templateData.receiverAddress || ""}
+            />
+          )}
+          {templateData?.templateType === "nft" && (
+            <NFTCitrea
+              bgColor={templateData.bgColor}
+              imageUrl={templateData.imageUrl}
+              heading={templateData.heading}
+              text={templateData.text}
+              buttonColor={templateData.buttonColor}
+              btnText={templateData.btnText}
+              contractAddress={templateData.contractAddress || "0x"}
+              functionToInvoke={templateData.functionToInvoke || ""}
+              abiUrl={templateData.abiUrl}
             />
           )}
         </>
@@ -81,7 +99,20 @@ function Template() {
               heading={templateData.heading}
               text={templateData.text}
               imageUrl={templateData.imageUrl}
-              reciverAddress={templateData.receiverAddress}
+              reciverAddress={templateData.receiverAddress || ""}
+            />
+          )}
+          {templateData?.templateType === "nft" && (
+            <NFTStarknet
+              bgColor={templateData.bgColor}
+              imageUrl={templateData.imageUrl}
+              heading={templateData.heading}
+              text={templateData.text}
+              buttonColor={templateData.buttonColor}
+              btnText={templateData.btnText}
+              contractAddress={templateData.contractAddress || "0x"}
+              functionToInvoke={templateData.functionToInvoke || ""}
+              abiUrl={templateData.abiUrl}
             />
           )}
         </>
