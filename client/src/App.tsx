@@ -6,6 +6,7 @@ import Template from "./pages/Template";
 import { EmbedlyContext } from "./context/contractContext";
 import MyTemplate from "./pages/MyTemplate";
 import NFTEdit from "./pages/NFTEdit";
+import PollEdit from "./pages/PollEdit";
 import ConnectWallet from "./pages/ConnectWallet";
 import { useContext } from "react";
 
@@ -28,6 +29,10 @@ function App() {
             <Route
               path="/template/nft"
               element={currentAccount ? <NFTEdit /> : <ConnectWallet />}
+            />
+            <Route
+              path="/template/poll"
+              element={currentAccount ? <PollEdit /> : <ConnectWallet />}
             />
             <Route
               path="/custom/:id"
