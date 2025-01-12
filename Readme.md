@@ -4,7 +4,6 @@
 
 ![image](https://github.com/user-attachments/assets/ee4a2adf-a5ac-4ec6-866f-d879b3b134fb)
 
-
 Embedly simplifies content creation and sharing across your favorite social platforms. Follow these easy steps to get started:
 
 ---
@@ -46,15 +45,33 @@ Embedly offers a variety of content templates to meet your needs:
 Start creating and sharing today with **Embedly**! 🌐
 
 ### Donation
+
 Takes Reciever's address <br>
 <img width="1508" alt="image" src="https://github.com/user-attachments/assets/d947471f-9b22-43ae-b725-7eecb7043ea0" />
 
 ## NFT
+
 Takes Contract address, abi and function to invoke (currently we don't support arguments) <br>
 <img width="1511" alt="image" src="https://github.com/user-attachments/assets/12a96c7a-58ea-46c7-b49e-057b560c74ed" />
 
 # Poll
+
 Takes Poll question, options upto 4. <br>
 <img width="1512" alt="image" src="https://github.com/user-attachments/assets/9d59d863-1486-40e2-8ccf-819e85397cb3" />
 
+## 🛠️ **Tech Stack**
 
+**Frontend:**
+
+- **React with Vite**: Fast and modern frontend development for seamless user experience.
+
+**Backend & Smart Contracts:**
+
+- **Cairo**: The programming language powering StarkNet smart contracts.
+- **Solidity**: For building Ethereum-compatible smart contracts on Citrea.
+
+**Browser Extension:**
+
+- **JavaScript**: Lightweight and versatile for creating the browser extension.
+
+This robust tech stack ensures scalability, security, and speed for your project! 🚀
