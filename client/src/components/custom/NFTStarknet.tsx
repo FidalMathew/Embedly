@@ -67,9 +67,18 @@ function NFTStarknet({
     console.log("functionToInvoke", functionToInvoke);
 
     try {
-      return [
-        contract.populate(functionToInvoke, [address, BigInt(2), [BigInt(1)]]),
-      ];
+      if (
+        contractAddress ==
+        "0x0677d03cae9538bcd7c3325e5bd75ab778959fdf499323503ca657bf90e4c55c"
+      )
+        return [
+          contract.populate(functionToInvoke, [
+            address,
+            BigInt(11),
+            [BigInt(1)],
+          ]),
+        ];
+      else return [contract.populate(functionToInvoke, [address])];
     } catch (error) {
       console.error("Error populating function call:", error);
       return [];
