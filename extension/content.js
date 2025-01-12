@@ -48,7 +48,7 @@ async function replaceEmbTags() {
 
 <body>
     <div class="iframe-container">
-        <iframe src="http://localhost:5173/custom/${url1}" title="Embedded React App"
+        <iframe src="https://embedly-nine.vercel.app/custom/${url1}" title="Embedded React App"
             allow="accelerometer; camera; encrypted-media; geolocation; gyroscope; microphone"
             sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
     </div>
