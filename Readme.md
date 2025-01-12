@@ -1,10 +1,9 @@
-Here's a polished README for your project:
-
----
-
 # Embedly
 
 **Effortlessly Share Stunning Content Across Socials**
+
+![image](https://github.com/user-attachments/assets/ee4a2adf-a5ac-4ec6-866f-d879b3b134fb)
+
 
 Embedly simplifies content creation and sharing across your favorite social platforms. Follow these easy steps to get started:
 
