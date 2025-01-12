@@ -8,6 +8,7 @@ import MyTemplate from "./pages/MyTemplate";
 import NFTEdit from "./pages/NFTEdit";
 import PollEdit from "./pages/PollEdit";
 import ConnectWallet from "./pages/ConnectWallet";
+import Create from "./pages/Create";
 import { useContext } from "react";
 
 function App() {
@@ -34,7 +35,13 @@ function App() {
               path="/template/poll"
               element={currentAccount ? <PollEdit /> : <ConnectWallet />}
             />
+
             <Route path="/custom/:id" element={<Template />} />
+
+            <Route
+              path="/create"
+              element={currentAccount ? <Create /> : <ConnectWallet />}
+            />
             <Route
               path="/mytemplates"
               element={currentAccount ? <MyTemplate /> : <ConnectWallet />}

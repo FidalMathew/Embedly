@@ -86,11 +86,15 @@ function PollCitrea({
       const tx = await pollContract.vote(pollId, optionIndex + 1);
       console.log(tx, "tx");
       await tx.wait();
-      fetchUserVote();
-      alert("Transaction sent!");
+
+      setTimeout(() => {
+        fetchUserVote();
+      }, 1000);
+
+      // alert("Transaction sent!");
     } catch (error) {
       console.error("Error sending transaction:", error);
-      alert("Failed to send transaction.");
+      // alert("Failed to send transaction.");
     }
   };
 
