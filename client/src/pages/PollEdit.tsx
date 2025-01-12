@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmbedlyContext } from "@/context/contractContext";
 import { PinataSDK } from "pinata-web3";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ClipboardIcon } from "@heroicons/react/20/solid";
 import { useToast } from "@/hooks/use-toast";
 import { Trash } from "lucide-react";
+import citreaPollABI from "@/lib/citrea_pollAbi.json";
 
 import {
   Dialog,
@@ -15,6 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ethers } from "ethers";
 
 function PollEdit() {
   const { toast } = useToast();
@@ -36,6 +38,37 @@ function PollEdit() {
   ]);
   const [templateSnippet, setTemplateSnippet] = useState<string>("");
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const [totalPolls, setTotalPolls] = useState(0);
+
+  const { ethereum } = window;
+
+  if (!ethereum) {
+    alert("Metamask not found");
+    return;
+  }
+
+  const provider = new ethers.providers.Web3Provider(ethereum);
+  const signer = provider.getSigner();
+  const pollContractAddress = "0x46bf74A07F59BCf3446e7aabF89043bC39f3322C";
+
+  const pollContract = new ethers.Contract(
+    pollContractAddress,
+    citreaPollABI,
+    signer
+  );
+
+  useEffect(() => {
+    const fetchTotalPolls = async () => {
+      console.log("Poll Contract:", pollContract);
+      const totalPolls = await pollContract.getPollCount();
+      setTotalPolls(Number(totalPolls));
+
+      // console.log("Total Polls:", totalPolls.toString());
+    };
+
+    if (pollContract) fetchTotalPolls();
+  }, [pollContract]);
 
   const addOption = () => {
     if (options.length < 4) {
@@ -64,15 +97,18 @@ function PollEdit() {
   };
 
   const publishTemplate = async () => {
+    const tempOptions = options.map((option) => option.text);
+
     const data = {
       templateId: currentAccount + "_" + templateName,
       chain,
+      pollId: totalPolls + 1,
       templateType: "poll",
       bgColor,
       pollColor,
       heading,
       text,
-      options,
+      options: tempOptions,
     };
 
     const pinata = new PinataSDK({
@@ -86,10 +122,16 @@ function PollEdit() {
     if (embedlyContract) {
       const tx = await embedlyContract?.addTemplate(cid);
       await tx?.wait();
+    }
 
+    if (pollContract) {
+      const tx = await pollContract.createPoll(text, tempOptions);
+      await tx.wait();
       setTemplateSnippet(`<emb ${cid} emb>`);
       setDialogOpen(true);
     }
+
+    alert("Poll template created successfully!");
   };
 
   const handleCopyToClipboard = () => {
@@ -160,17 +202,25 @@ function PollEdit() {
                     </span>
 
                     {/* Background Progress Fill */}
-                    <div
+                    {/* <div
                       className="absolute top-0 left-0 h-full  rounded-md opacity-15"
                       style={{
                         width: `${(option.votes / 5) * 100}%`, // Dynamically set width based on the votes
                         transition: "width 0.3s ease-in-out", // Smooth transition effect
                         backgroundColor: pollColor,
                       }}
-                    />
+                    /> */}
                   </li>
                 ))}
               </ul>
+              <div className="mt-4">
+                <Button
+                  className="w-full"
+                  style={{ backgroundColor: pollColor, color: "#fff" }}
+                >
+                  Connect Wallet
+                </Button>
+              </div>
             </div>
           </div>
 

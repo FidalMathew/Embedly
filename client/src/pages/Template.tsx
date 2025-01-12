@@ -2,6 +2,7 @@ import DonationCitrea from "@/components/custom/DonationCitrea";
 import DonationStarknet from "@/components/custom/DonationStarknet";
 import NFTCitrea from "@/components/custom/NFTCitrea";
 import NFTStarknet from "@/components/custom/NFTStarknet";
+import PollCitrea from "@/components/custom/PollCitrea";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -19,6 +20,9 @@ interface TemplateData {
   contractAddress: `0x${string}`;
   functionToInvoke: string;
   abiUrl: string;
+  options: string[];
+  pollId: number;
+  pollColor: string;
 }
 
 function Template() {
@@ -86,6 +90,16 @@ function Template() {
               contractAddress={templateData.contractAddress || "0x"}
               functionToInvoke={templateData.functionToInvoke || ""}
               abiUrl={templateData.abiUrl}
+            />
+          )}
+          {templateData?.templateType === "poll" && (
+            <PollCitrea
+              bgColor={templateData.bgColor}
+              heading={templateData.heading}
+              text={templateData.text}
+              options={templateData.options}
+              pollId={templateData.pollId}
+              pollColor={templateData.pollColor}
             />
           )}
         </>

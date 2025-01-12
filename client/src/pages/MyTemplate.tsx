@@ -8,8 +8,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { EmbedlyContext } from "@/context/contractContext";
 import Navbar from "@/components/custom/Navbar";
-import { ArrowRight, Trash, ClipboardCopy, Link } from "lucide-react";
-import { al } from "node_modules/@starknet-react/core/dist/index-BztLWTpJ";
+import { ArrowRight, Trash, ClipboardCopy } from "lucide-react";
 
 interface Template {
   id: string;
@@ -33,7 +32,7 @@ export default function MyTemplates() {
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
 
   const handleCopyToClipboard = (id: string) => {
-    navigator.clipboard.writeText(`<emb ${id} emb/>`);
+    navigator.clipboard.writeText(`<emb ${id} emb>`);
     console.log("Copied to clipboard!");
     alert("Copied to clipboard!");
   };

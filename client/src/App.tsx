@@ -34,10 +34,7 @@ function App() {
               path="/template/poll"
               element={currentAccount ? <PollEdit /> : <ConnectWallet />}
             />
-            <Route
-              path="/custom/:id"
-              element={currentAccount ? <Template /> : <ConnectWallet />}
-            />
+            <Route path="/custom/:id" element={<Template />} />
             <Route
               path="/mytemplates"
               element={currentAccount ? <MyTemplate /> : <ConnectWallet />}
